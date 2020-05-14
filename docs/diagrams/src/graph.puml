@@ -1,0 +1,22 @@
+@startmindmap
+* User
+**_ id: ID!
+**_ username: String!
+**_ name: String!
+**_ email: String!
+**_ password: String!
+**_ token: String
+**_ lists: [List!]!
+*** List
+****_ id: ID!
+****_ name: String!
+****_ isPublic: Boolean!
+****_ owner: User!
+****_ tasks: [Task!]!
+***** Task
+******_ id: ID!
+******_ title: String!
+******_ content: String
+******_ isPublic: Boolean!
+******_ list: List
+@endmindmap

@@ -28,6 +28,7 @@ model List {
 
 model Task {
   id Int @id @default(autoincrement())
+  title String?
   content String
   isPublic Boolean @default(false)
   list List @relation(fields: [listId], references: [id])

@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url = env("PRISMA_DB_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  username String @unique
+  name String
+  email String @unique
+  password String
+  token String?
+  lists List[]
+}
+
+model List {
+  id Int @id @default(autoincrement())
+  name String
+  isPublic Boolean @default(false)
+  owner User @relation(fields: [ownerId], references: [id])
+  ownerId Int
+  tasks Task[]
+}
+
+model Task {
+  id Int @id @default(autoincrement())
+  content String
+  isPublic Boolean @default(false)
+  list List @relation(fields: [listId], references: [id])
+  listId Int
+}

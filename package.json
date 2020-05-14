@@ -1,0 +1,36 @@
+{
+  "name": "section9",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "generate:db": "cd ./src/store/prisma/db && touch %npm_config_dbname%.db",
+    "prisma:generate": "env-cmd -f ./src/config/%npm_config_env%.env npx prisma generate --schema ./src/store/prisma/schema.prisma",
+    "prisma:migrate:save": "env-cmd -f ./src/config/%npm_config_env%.env npx prisma migrate save --name %npm_config_name% --experimental",
+    "postprisma:migrate:save": "env-cmd -f ./src/config/%npm_config_env%.env npx prisma migrate up --experimental",
+    "dev": "env-cmd -f ./src/config/test.env babel-node ./src/index.js",
+    "lint": "standard --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.9.6",
+    "@prisma/cli": "^2.0.0-beta.5",
+    "nodemon": "^2.0.3",
+    "standard": "^14.3.4"
+  },
+  "dependencies": {
+    "@prisma/client": "^2.0.0-beta.4",
+    "apollo-boost": "^0.4.8",
+    "bcrypt": "^4.0.1",
+    "gql": "^1.1.2",
+    "graphql-yoga": "^1.18.3",
+    "jest": "^26.0.1",
+    "jsonwebtoken": "^8.5.1"
+  }
+}

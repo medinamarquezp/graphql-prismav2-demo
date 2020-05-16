@@ -12,17 +12,8 @@
     "import/parsers": {
       "@typescript-eslint/parser": [".ts"],
       "@typescript-eslint": [".ts"]
-    },
-    "import/resolver": {
-      "typescript": {}
     }
   },
-  "overrides": [
-    {
-      "files": ["*.ts", "*.tsx"],
-      "rules": {}
-    }
-  ],
  "rules": {
   "@typescript-eslint/no-explicit-any": "off",
   "@typescript-eslint/explicit-function-return-type": "off"

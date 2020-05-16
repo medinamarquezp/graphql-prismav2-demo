@@ -24,6 +24,12 @@ type Task {
   list: List
 }
 
+type Query {
+  ping: String
+  getUsers: [User]
+  getUser(id: ID!): User!
+}
+
 input inputCreateUser{
   username: String!
   name: String!
@@ -41,8 +47,6 @@ input inputUpdateUser{
 }
 
 type Mutation {
-  getUsers(): [User!]!
-  getUser(id:ID!): User!
   createUser(data: inputCreateUser!): User!
   updateUser(data: inputUpdateUser!): User!
   deleteUser(id: ID!): User!

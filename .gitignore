@@ -1,3 +1,4 @@
+build
 node_modules
 src/config/[a-z]*.env
 src/store/prisma/migrations

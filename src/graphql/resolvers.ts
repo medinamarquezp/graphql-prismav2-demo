@@ -1,11 +1,7 @@
-export const resolvers = {
-  Query: {
-    ping(): string 
-    {
-      return 'pong'
-    }
-  },
-  Mutation: {
+import { Query } from './resolvers/Query'
+import { Mutation } from './resolvers/Mutation'
 
-  }
+export const resolvers = {
+  Query,
+  Mutation
 }

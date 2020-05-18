@@ -1,12 +1,12 @@
 import { GqlServer } from '../GqlServer';
 import { apolloClient, gql } from './apolloClient'
 
-beforeEach(async () => {
+beforeAll(async () => {
   await GqlServer.start()
 })
 
-afterEach(async () => {
-  await GqlServer.stop()
+afterAll(() => {
+  GqlServer.stop()
 })
 
 describe('Server Test', () => {

@@ -1,3 +1,3 @@
-import { GqlServer } from './GqlServer';
+import { GQLServer } from './GQLServer';
 
-GqlServer.start()
+GQLServer.start()

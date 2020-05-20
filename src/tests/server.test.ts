@@ -1,12 +1,13 @@
-import { GqlServer } from '../GqlServer';
-import { apolloClient, gql } from './apolloClient'
+import { gql } from 'apollo-boost'
+import { GQLServer } from '../GQLServer';
+import apolloClient from '../ApolloClientSingleton'
 
 beforeAll(async () => {
-  await GqlServer.start()
+  await GQLServer.start()
 })
 
 afterAll(() => {
-  GqlServer.stop()
+  GQLServer.stop()
 })
 
 describe('Server Test', () => {

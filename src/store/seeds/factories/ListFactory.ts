@@ -1,15 +1,16 @@
 import { lorem, random } from 'faker'
+import List from '@models/List'
 import { Ifactory } from './IFactory';
-import client from '../../PrismaClientSingleton'
+import client from '@store/PrismaClientSingleton'
 
 export class ListFactory implements Ifactory {
   async define() {
     const ids = await this.getUsersIds()
-    return {
-      name: lorem.words(4), 
-      isPublic: random.boolean(),
-      ownerId: random.arrayElement(ids),
-    }
+    const list = new List({
+      name: lorem.words(2), 
+      isPublic: random.boolean()
+    })
+    return list.getData(random.arrayElement(ids))
   }
   private async getUsersIds(): Promise<number[]> {
     try {

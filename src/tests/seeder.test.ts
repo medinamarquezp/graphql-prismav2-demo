@@ -1,4 +1,6 @@
+import client from '@store/PrismaClientSingleton'
 import Seeder from '@seeds/Seeder';
+import cleanDB from './utils/cleanDB'
 
 const totalUsers = 5
 const totalLists = 3
@@ -11,9 +13,12 @@ let lists: any
 let tasks: any
 
 beforeAll(async () => {
+  await cleanDB()
   users = await Seeder.seedUsers(totalUsers, false, false)
   lists = await Seeder.seedLists(totalLists, false, false)
   tasks = await Seeder.seedTasks(totalTasks, false, false)
+  await Seeder.seedUsers(totalUsers, true, true)
+  await Seeder.seedLists(totalLists, true, true)
 })
 
 describe('Users factory seed', () => {
@@ -54,5 +59,57 @@ describe('Tasks factory seed', () => {
   test('Task\'s isPublic should be boolean', async () => {
     expect(typeof tasks[random(totalTasks)].data.isPublic).toBe('boolean')
     expect(tasks[random(totalTasks)].data.isPublic).toEqual(expect.any(Boolean))
+  })
+})
+
+describe('Seed users on DB', () => {
+  test('It should be 6 users on DB', async () => {
+    const totalUsers = await client.user.count()
+    expect(totalUsers).toBe(6)
+  })
+  test('It should be 1 user with email medinamarquezp@test.es', async () => {
+    const countUsersByEmail = await client.user.count({
+      where: {
+        email: 'medinamarquezp@test.es'
+      }
+    })
+    expect(countUsersByEmail).toBe(1)
+  })
+  test('User with email medinamarquezp@test.es should have medinamarquezp as username', async () => {
+    const medinamarquezp = await client.user.findOne({
+      select: {
+        username: true
+      },
+      where: {
+        email: 'medinamarquezp@test.es'
+      }
+    })
+    expect(medinamarquezp.username).toBe('medinamarquezp')
+  })
+})
+
+describe('Seed lists on DB', () => {
+  test('It Should be 4 lists on DB', async () => {
+    const totalLists = await client.list.count()
+    expect(totalLists).toBe(4)
+  })
+  test('It should be 1 list with name Test Lista', async () => {
+    const testListaCount = await client.list.count({
+      where: {
+        name: 'Test lista'
+      }
+    })
+    expect(testListaCount).toBe(1)
+  })
+  test('Test lista should be public', async() => {
+    const testListaPublic = await client.list.findMany({
+      select: {
+        isPublic: true
+      },
+      where: {
+        name: 'Test list'
+      }
+    })
+    expect(testListaPublic).toBeTruthy()
   })
 })

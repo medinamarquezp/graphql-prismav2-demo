@@ -1,6 +1,6 @@
 import { gql } from 'apollo-boost'
-import { GQLServer } from '../GQLServer';
-import apolloClient from '../ApolloClientSingleton'
+import { GQLServer } from '@src/GQLServer';
+import apolloClient from '@src/ApolloClientSingleton'
 
 beforeAll(async () => {
   await GQLServer.start()

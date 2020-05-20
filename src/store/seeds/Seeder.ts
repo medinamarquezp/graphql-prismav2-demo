@@ -1,7 +1,5 @@
-
-import { PrismaClient } from '@prisma/client';
 import Mocks from '@seeds/Mocks'
-import client from '@store/PrismaClientSingleton';
+import client, { PrismaClient } from '@store/PrismaClientSingleton';
 import { GenerateSeeds } from '@seeds/GenerateSeeds';
 import { UserFactory } from '@factories/UserFactory';
 import { ListFactory } from '@factories/ListFactory';

@@ -1,7 +1,7 @@
 import path from 'path'
 import { Server as HttpServer } from 'http'
 import { GraphQLServer } from 'graphql-yoga'
-import { resolvers } from './graphql/resolvers'
+import { resolvers } from '@graphql/resolvers'
 
 export class GQLServer {
   private static uri: string = process.env.URI 

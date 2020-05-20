@@ -1,6 +1,6 @@
-import { lorem, random } from 'faker'
 import Task from '@models/Task'
-import { Ifactory } from './IFactory'
+import { lorem, random } from 'faker'
+import { Ifactory } from '@factories/IFactory'
 import client from '@store/PrismaClientSingleton'
 
 export class TaskFactory implements Ifactory {
@@ -22,10 +22,10 @@ export class TaskFactory implements Ifactory {
           id: true
         }
       })
-      if(lidObject){
-        return lidObject.map(uid => uid.id)
+      if(!lidObject){
+        return []
       }
-      return []
+      return lidObject.map(uid => uid.id)
     } catch (err) {
       console.error(err)
       return []

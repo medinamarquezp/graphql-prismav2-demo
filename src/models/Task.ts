@@ -4,13 +4,11 @@ class Task {
   private content: string
   private isPublic: boolean
   
-  constructor(task: TaskInterface) {
-    const { title, content, isPublic } = task
+  constructor({ title, content, isPublic }: TaskInterface) {
     this.title = title
     this.content = content
     this.isPublic = isPublic
   }
-
   getData(listRelated: number): any {
     return {
       data: {
@@ -21,9 +19,7 @@ class Task {
       }
     }
   }
-
 }
-
 interface TaskInterface {
   title: string; 
   content: string;

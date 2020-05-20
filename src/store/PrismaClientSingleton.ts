@@ -7,7 +7,6 @@ class PrismaClientSingleton extends PrismaClient {
   private constructor() {
     super()
   }
-
   static getInstance(): PrismaClient {
     if(! PrismaClientSingleton.instance ) {
       PrismaClientSingleton.instance = new PrismaClient()
@@ -19,4 +18,4 @@ class PrismaClientSingleton extends PrismaClient {
 
 const client: PrismaClient = PrismaClientSingleton.getInstance()
 
-export { client as default }
+export { client as default, PrismaClient }

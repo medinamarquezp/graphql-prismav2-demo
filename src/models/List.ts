@@ -1,10 +1,9 @@
 class List {
-  
+
   private name: string
   private isPublic: boolean
   
-  constructor(list: ListInterface) {
-    const { name, isPublic } = list
+  constructor({ name, isPublic }: ListInterface) {
     this.name = name
     this.isPublic = isPublic
   }
@@ -19,9 +18,7 @@ class List {
       }
     }
   }
-
 }
-
 interface ListInterface {
   name: string;
   isPublic: boolean;

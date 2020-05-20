@@ -6,8 +6,7 @@ class User {
   private password: string
   private token: string
   
-  constructor(user: UserInterface) {
-    const { username, name, email, password, token } = user
+  constructor({ username, name, email, password, token }: UserInterface) {
     this.username = username
     this.name = name
     this.email = email
@@ -22,7 +21,6 @@ class User {
       }
     }
   }
-
 }
 
 interface UserInterface {

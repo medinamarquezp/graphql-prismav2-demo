@@ -1,8 +1,7 @@
 class List {
-
   private name: string
   private isPublic: boolean
-  
+
   constructor({ name, isPublic }: ListInterface) {
     this.name = name
     this.isPublic = isPublic
@@ -20,8 +19,8 @@ class List {
   }
 }
 interface ListInterface {
-  name: string;
-  isPublic: boolean;
+  name: string
+  isPublic: boolean
 }
 
 export { List as default }

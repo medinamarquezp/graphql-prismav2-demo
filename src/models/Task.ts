@@ -1,9 +1,8 @@
 class Task {
-  
   private title: string
   private content: string
   private isPublic: boolean
-  
+
   constructor({ title, content, isPublic }: TaskInterface) {
     this.title = title
     this.content = content
@@ -21,9 +20,9 @@ class Task {
   }
 }
 interface TaskInterface {
-  title: string; 
-  content: string;
-  isPublic: boolean;
+  title: string
+  content: string
+  isPublic: boolean
 }
 
 export { Task as default }

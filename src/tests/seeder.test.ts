@@ -23,13 +23,13 @@ describe('Seed Users locally', () => {
     const totalUsersAddingMock = totalUsers + 1
     expect(users.length).toBe(totalUsersAddingMock)
   })
-  test('User\'s name should have two words', async () => {
+  test("User's name should have two words", async () => {
     expect(users[random(totalUsers)].data.name.split(' ').length).toBe(2)
   })
-  test('User\'s email should have an @', async () => {
+  test("User's email should have an @", async () => {
     expect(users[random(totalUsers)].data.email.indexOf('@')).not.toBe(-1)
   })
-  test('User\'s token should have 24 characters', async () => {
+  test("User's token should have 24 characters", async () => {
     expect(users[random(totalUsers)].data.token.length).toBe(24)
   })
 })
@@ -39,10 +39,10 @@ describe('Seed Lists locally', () => {
     const totalListsAddingMock = totalLists + 1
     expect(lists.length).toBe(totalListsAddingMock)
   })
-  test('List\'s name should have two words', async () => {
+  test("List's name should have two words", async () => {
     expect(lists[random(totalLists)].data.name.split(' ').length).toBe(2)
   })
-  test('Lits\'s isPublic should be boolean', async () => {
+  test("Lits's isPublic should be boolean", async () => {
     expect(typeof lists[random(totalLists)].data.isPublic).toBe('boolean')
     expect(lists[random(totalLists)].data.isPublic).toEqual(expect.any(Boolean))
   })
@@ -53,10 +53,10 @@ describe('Seed Tasks locally', () => {
     const totalTasksAddingMock = totalTasks + 1
     expect(tasks.length).toBe(totalTasksAddingMock)
   })
-  test('Task\'s title should have five words', async () => {
+  test("Task's title should have five words", async () => {
     expect(tasks[random(totalTasks)].data.title.split(' ').length).toBe(5)
   })
-  test('Task\'s isPublic should be boolean', async () => {
+  test("Task's isPublic should be boolean", async () => {
     expect(typeof tasks[random(totalTasks)].data.isPublic).toBe('boolean')
     expect(tasks[random(totalTasks)].data.isPublic).toEqual(expect.any(Boolean))
   })
@@ -101,7 +101,7 @@ describe('Seed Lists on DB', () => {
     })
     expect(testListaCount).toBe(1)
   })
-  test('Test lista should be public', async() => {
+  test('Test lista should be public', async () => {
     const testListaPublic = await client.list.findMany({
       select: {
         isPublic: true

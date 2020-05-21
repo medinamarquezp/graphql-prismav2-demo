@@ -1,18 +1,17 @@
 import Mocks from '@seeds/Mocks'
-import client, { PrismaClient } from '@store/PrismaClientSingleton';
-import { GenerateSeeds } from '@seeds/GenerateSeeds';
-import { UserFactory } from '@factories/UserFactory';
-import { ListFactory } from '@factories/ListFactory';
-import { TaskFactory } from '@factories/TaskFactory';
+import client, { PrismaClient } from '@store/PrismaClientSingleton'
+import { GenerateSeeds } from '@seeds/GenerateSeeds'
+import { UserFactory } from '@factories/UserFactory'
+import { ListFactory } from '@factories/ListFactory'
+import { TaskFactory } from '@factories/TaskFactory'
 
 class Seeder {
-
-  private static numUsers= 5
-  private static numLists= 5
-  private static numTasks= 15
+  private static numUsers = 5
+  private static numLists = 5
+  private static numTasks = 15
   private static client: PrismaClient = client
 
-  static async seedUsers(numUsers= Seeder.numUsers, mockUser= true, save= false) {
+  static async seedUsers(numUsers = Seeder.numUsers, mockUser = true, save = false) {
     const seeds = new GenerateSeeds(new UserFactory(), numUsers)
     const users = await seeds.getSeeds()
     if (mockUser) users.push(Mocks.user())
@@ -24,7 +23,7 @@ class Seeder {
     return users
   }
 
-  static async seedLists (numLists= Seeder.numLists, mockList= true, save= false) {
+  static async seedLists(numLists = Seeder.numLists, mockList = true, save = false) {
     const seeds = new GenerateSeeds(new ListFactory(), numLists)
     const lists = await seeds.getSeeds()
     if (mockList) lists.push(Mocks.list())
@@ -35,7 +34,7 @@ class Seeder {
     }
     return lists
   }
-  static async seedTasks (numTasks= Seeder.numTasks, mockTask= true, save= false) {
+  static async seedTasks(numTasks = Seeder.numTasks, mockTask = true, save = false) {
     const seeds = new GenerateSeeds(new TaskFactory(), numTasks)
     const tasks = await seeds.getSeeds()
     if (mockTask) tasks.push(Mocks.task())
@@ -46,7 +45,7 @@ class Seeder {
     }
     return tasks
   }
-  static async seedApp () {
+  static async seedApp() {
     try {
       console.log('1 of 3: Seeding users')
       await Seeder.seedUsers(Seeder.numUsers, true, true)
@@ -60,7 +59,6 @@ class Seeder {
       process.exit(1)
     }
   }
-
 }
 
 export { Seeder as default }

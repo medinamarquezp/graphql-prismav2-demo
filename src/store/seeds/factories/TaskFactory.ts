@@ -4,11 +4,10 @@ import { Ifactory } from '@factories/IFactory'
 import client from '@store/PrismaClientSingleton'
 
 export class TaskFactory implements Ifactory {
-
   async define() {
     const ids = await this.getListsIds()
     const task = new Task({
-      title: lorem.words(5), 
+      title: lorem.words(5),
       content: lorem.paragraph(),
       isPublic: random.boolean()
     })
@@ -22,7 +21,7 @@ export class TaskFactory implements Ifactory {
           id: true
         }
       })
-      if(!lidObject){
+      if (!lidObject) {
         return []
       }
       return lidObject.map(uid => uid.id)

@@ -9,5 +9,4 @@ export const Query = {
   async getUsers(): Promise<User[]> {
     return await client.user.findMany()
   }
-
-} 
+}

@@ -1,3 +1,3 @@
 export interface Ifactory {
-  define(): any;
+  define(): any
 }

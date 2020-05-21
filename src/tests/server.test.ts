@@ -1,5 +1,5 @@
 import { gql } from 'apollo-boost'
-import { GQLServer } from '@src/GQLServer';
+import { GQLServer } from '@src/GQLServer'
 import apolloClient from '@src/ApolloClientSingleton'
 
 beforeAll(async () => {
@@ -13,7 +13,7 @@ afterAll(() => {
 describe('Server Test', () => {
   test('it should display "pong" when querying for "ping"', async () => {
     const ping = gql`
-      query{
+      query {
         ping
       }
     `
@@ -21,5 +21,4 @@ describe('Server Test', () => {
 
     expect(rs.data.ping).toBe('pong')
   })
-  
 })

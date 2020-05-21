@@ -1,29 +1,27 @@
-import client from '@store/PrismaClientSingleton'
-import Seeder from '@seeds/Seeder';
+import Seeder from '@seeds/Seeder'
 import cleanDB from './utils/cleanDB'
+import client from '@store/PrismaClientSingleton'
 
+let users: any
+let lists: any
+let tasks: any
 const totalUsers = 5
 const totalLists = 3
 const totalTasks = 12
 
 const random = (max: number) => Math.floor(Math.random() * max)
 
-let users: any
-let lists: any
-let tasks: any
-
 beforeAll(async () => {
   await cleanDB()
-  users = await Seeder.seedUsers(totalUsers, false, false)
-  lists = await Seeder.seedLists(totalLists, false, false)
-  tasks = await Seeder.seedTasks(totalTasks, false, false)
-  await Seeder.seedUsers(totalUsers, true, true)
-  await Seeder.seedLists(totalLists, true, true)
+  users = await Seeder.seedUsers(totalUsers, true, true)
+  lists = await Seeder.seedLists(totalLists, true, true)
+  tasks = await Seeder.seedTasks(totalTasks, true, true)
 })
 
-describe('Users factory seed', () => {
+describe('Seed Users locally', () => {
   test('Users seed length should be 5', async () => {
-    expect(users.length).toBe(totalUsers)
+    const totalUsersAddingMock = totalUsers + 1
+    expect(users.length).toBe(totalUsersAddingMock)
   })
   test('User\'s name should have two words', async () => {
     expect(users[random(totalUsers)].data.name.split(' ').length).toBe(2)
@@ -36,9 +34,10 @@ describe('Users factory seed', () => {
   })
 })
 
-describe('Lists factory seed', () => {
+describe('Seed Lists locally', () => {
   test('Lists seed length should be 3', async () => {
-    expect(lists.length).toBe(totalLists)
+    const totalListsAddingMock = totalLists + 1
+    expect(lists.length).toBe(totalListsAddingMock)
   })
   test('List\'s name should have two words', async () => {
     expect(lists[random(totalLists)].data.name.split(' ').length).toBe(2)
@@ -49,9 +48,10 @@ describe('Lists factory seed', () => {
   })
 })
 
-describe('Tasks factory seed', () => {
+describe('Seed Tasks locally', () => {
   test('Tasks seed length should be 12', async () => {
-    expect(tasks.length).toBe(totalTasks)
+    const totalTasksAddingMock = totalTasks + 1
+    expect(tasks.length).toBe(totalTasksAddingMock)
   })
   test('Task\'s title should have five words', async () => {
     expect(tasks[random(totalTasks)].data.title.split(' ').length).toBe(5)
@@ -62,7 +62,7 @@ describe('Tasks factory seed', () => {
   })
 })
 
-describe('Seed users on DB', () => {
+describe('Seed Users on DB', () => {
   test('It should be 6 users on DB', async () => {
     const totalUsers = await client.user.count()
     expect(totalUsers).toBe(6)
@@ -88,7 +88,7 @@ describe('Seed users on DB', () => {
   })
 })
 
-describe('Seed lists on DB', () => {
+describe('Seed Lists on DB', () => {
   test('It Should be 4 lists on DB', async () => {
     const totalLists = await client.list.count()
     expect(totalLists).toBe(4)
@@ -111,5 +111,24 @@ describe('Seed lists on DB', () => {
       }
     })
     expect(testListaPublic).toBeTruthy()
+  })
+})
+
+describe('Seed Tasks on DB', () => {
+  test('It should be 14 tasks on DB', async () => {
+    const totalTasksOnDB = await client.task.count()
+    expect(totalTasksOnDB).toBe(13)
+  })
+  test('It should be 1 task with title Crear tarea para la demo', async () => {
+    const existTestTask = await client.task.count({
+      where: {
+        title: 'Crear tarea para la demo'
+      }
+    })
+    expect(existTestTask).toBe(1)
+  })
+  test('Last task on DB sould be public', async () => {
+    const lastTask = await client.raw('SELECT isPublic FROM Task ORDER BY id DESC LIMIT 1')
+    expect(lastTask).toBeTruthy()
   })
 })

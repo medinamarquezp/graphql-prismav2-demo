@@ -2,12 +2,22 @@ import path from 'path'
 import { Server as HttpServer } from 'http'
 import { GraphQLServer } from 'graphql-yoga'
 import { resolvers } from '@graphql/resolvers'
+import client from '@store/PrismaClientSingleton'
 
 export class GQLServer {
   private static uri: string = process.env.URI
   private static port: number = Number(process.env.PORT) as number
   private static typeDefs: string = path.join(__dirname, 'graphql', 'schema.graphql')
-  private static gql: GraphQLServer = new GraphQLServer({ typeDefs: GQLServer.typeDefs, resolvers })
+  private static gql: GraphQLServer = new GraphQLServer({
+    typeDefs: GQLServer.typeDefs,
+    resolvers,
+    context(request) {
+      return {
+        client,
+        request
+      }
+    }
+  })
   private static http: HttpServer
 
   static async start(): Promise<HttpServer> {

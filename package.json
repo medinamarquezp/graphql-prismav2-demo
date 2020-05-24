@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "@prisma/client": "^2.0.0-beta.4",
+    "Validator": "^1.0.8",
     "apollo-boost": "^0.4.8",
     "bcrypt": "^4.0.1",
     "cross-fetch": "^3.0.4",

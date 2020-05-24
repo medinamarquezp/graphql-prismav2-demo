@@ -58,10 +58,12 @@
       "@src*": ["src/*"],
       "@tests*": ["src/tests/*"],
       "@services*": ["src/services/*"],
+      "@repositories*": ["src/repositories/*"],
       "@store*": ["src/store/*"],
       "@seeds*": ["src/store/seeds/*"],
       "@factories*": ["src/store/seeds/factories/*"],
       "@graphql*": ["src/graphql/*"],
+      "@validators*": ["src/graphql/validators/*"],
       "@models*": ["src/models/*"]
     },
     /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */

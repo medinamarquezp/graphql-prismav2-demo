@@ -8,6 +8,7 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   moduleNameMapper: {
     '^@src/(.*)$': '<rootDir>/src/$1',
+    '^@services/(.*)$': '<rootDir>/src/services/$1',
     '^@models/(.*)$': '<rootDir>/src/models/$1',
     '^@graphql/(.*)$': '<rootDir>/src/graphql/$1',
     '^@store/(.*)$': '<rootDir>/src/store/$1',

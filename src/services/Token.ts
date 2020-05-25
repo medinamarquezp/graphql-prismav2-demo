@@ -25,6 +25,16 @@ class Token {
     }
     return decodedData
   }
+
+  static getTokenFromRequest(request): string {
+    const { authorization } = request.request.headers
+    if (!authorization) throw new Error('Authorization is required on this transaction')
+
+    const token = authorization.split(' ')[1]
+    if (!token) throw new Error('Token is not defined or is not correct')
+
+    return token
+  }
 }
 
 export { Token as default }

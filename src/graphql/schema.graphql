@@ -23,10 +23,16 @@ type Task {
   list: List
 }
 
+type LoginResponse {
+  token: String!
+}
+
 type Query {
   ping: String
   getUsers: [User]
   getUser(id: ID, username: String, email: String): User
+  login(email: String!, password: String!): LoginResponse!
+  me: User!
 }
 
 input inputCreateUser {

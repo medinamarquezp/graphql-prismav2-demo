@@ -46,3 +46,18 @@ export const deleteUserRepo = async (client, id) => {
     throw new Error(`Error on deleting a user: ${err}`)
   }
 }
+
+export const updateUserRepo = async (client, data) => {
+  const id = Number(data.id)
+  delete data.id
+  try {
+    return await client.user.update({
+      where: {
+        id
+      },
+      data
+    })
+  } catch (err) {
+    throw new Error(`Error on updating a user: ${err}`)
+  }
+}

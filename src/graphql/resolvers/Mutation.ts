@@ -1,6 +1,11 @@
 import Password from '@services/Password'
-import { validateCreateUserData } from '@validators/UserValidator'
-import { existUserRepo, createUserRepo, deleteUserRepo } from '@repositories/UserRepository'
+import { validateCreateUserData, validateUpdateUserData } from '@validators/UserValidator'
+import {
+  existUserRepo,
+  createUserRepo,
+  deleteUserRepo,
+  updateUserRepo
+} from '@repositories/UserRepository'
 
 export const Mutation = {
   async createUser(_, { data }, { client }) {
@@ -21,5 +26,25 @@ export const Mutation = {
     const existUser = await existUserRepo(client, { id: Number(id) })
     if (!existUser) throw new Error('There are not any user with this ID')
     return await deleteUserRepo(client, Number(id))
+  },
+
+  async updateUser(_, { data }, { client }) {
+    const existUser = await existUserRepo(client, { id: Number(data.id) })
+    if (!existUser) throw new Error('There are not any user with this ID')
+
+    validateUpdateUserData(data)
+
+    let updatedUserData: any
+    if (data.password) {
+      const password = await Password.hash(data.password)
+      updatedUserData = {
+        ...data,
+        password
+      }
+    } else {
+      updatedUserData = { ...data }
+    }
+
+    return await updateUserRepo(client, updatedUserData)
   }
 }

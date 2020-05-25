@@ -1,4 +1,4 @@
-import Validator from 'Validator'
+import validate from '@validators/validate'
 
 const createUserRules = {
   username: 'required',
@@ -6,11 +6,16 @@ const createUserRules = {
   email: 'required|email',
   password: 'required|min:8|alpha_num'
 }
+const updateUserRules = {
+  id: 'required|numeric',
+  email: 'nullable|email',
+  password: 'nullable|min:8|alpha_num'
+}
 
 export const validateCreateUserData = data => {
-  const result = Validator.make(data, createUserRules)
-  if (result.fails()) {
-    const errors = result.getErrors()
-    throw new Error(JSON.stringify(errors))
-  }
+  validate(data, createUserRules)
+}
+
+export const validateUpdateUserData = data => {
+  validate(data, updateUserRules)
 }

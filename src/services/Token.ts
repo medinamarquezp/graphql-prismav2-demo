@@ -9,8 +9,7 @@ class Token {
     try {
       token = await jwt.sign(data, Token.secret, { expiresIn: Token.expiresIn })
     } catch (err) {
-      console.error('Error on signing data: ', err)
-      return err.message
+      throw new Error(err)
     }
     return token
   }
@@ -20,17 +19,16 @@ class Token {
     try {
       decodedData = await jwt.verify(token, Token.secret)
     } catch (err) {
-      console.error('Error on verifying token: ', err)
-      return err.message
+      throw new Error(err)
     }
     return decodedData
   }
 
   static getTokenFromRequest(request): string {
-    const { authorization } = request.request.headers
+    const { authorization } = request.request.headers || false
     if (!authorization) throw new Error('Authorization is required on this transaction')
 
-    const token = authorization.split(' ')[1]
+    const token = authorization.split(' ')[1] || false
     if (!token) throw new Error('Token is not defined or is not correct')
 
     return token

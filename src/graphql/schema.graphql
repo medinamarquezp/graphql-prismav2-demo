@@ -32,6 +32,8 @@ type Query {
   getUser(id: ID, username: String, email: String): User
   login(email: String!, password: String!): LoginResponse!
   me: User!
+  getLists: [List]
+  getList(id: ID): List
 }
 
 input inputCreateUser {
@@ -49,8 +51,22 @@ input inputUpdateUser {
   password: String
 }
 
+input inputCreateList {
+  name: String!
+  isPublic: Boolean!
+}
+
+input inputUpdateList {
+  id: ID!
+  name: String
+  isPublic: Boolean
+}
+
 type Mutation {
   createUser(data: inputCreateUser!): User!
   updateUser(data: inputUpdateUser!): User!
   deleteUser(id: ID!): User!
+  createList(data: inputCreateList!): List!
+  updateList(data: inputUpdateList!): List!
+  deleteList(id: ID!): List!
 }

@@ -33,6 +33,13 @@ class Token {
 
     return token
   }
+
+  static async getIdFromRequestToken(request) {
+    const token = Token.getTokenFromRequest(request)
+    const decodedToken = await Token.verify(token)
+    const { id } = decodedToken
+    return id
+  }
 }
 
 export { Token as default }

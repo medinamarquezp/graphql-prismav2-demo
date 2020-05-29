@@ -1,6 +1,11 @@
 import Token from '@services/Token'
 import Password from '@services/Password'
 import { getUserRepo, getUsersRepo, existUserRepo } from '@repositories/UserRepository'
+import {
+  getPublicListsRepo,
+  getListsOfLoggedUserRepo,
+  getListbyIdRepo
+} from '@repositories/ListRepository'
 
 export const Query = {
   ping(): string {
@@ -33,9 +38,24 @@ export const Query = {
   },
 
   async me(_, __, { client, request }) {
-    const token = Token.getTokenFromRequest(request)
-    const decodedToken = await Token.verify(token)
-    const id = decodedToken.id
+    const id = await Token.getIdFromRequestToken(request)
     return await getUserRepo(client, { id })
+  },
+  async getLists(_, __, { client, request }) {
+    let userId: any
+    const { authorization } = request.request.headers || false
+    if (authorization) userId = await Token.getIdFromRequestToken(request)
+    if (userId) return await getListsOfLoggedUserRepo(client, userId)
+    return await getPublicListsRepo(client)
+  },
+  async getList(_, { id }, { client, request }) {
+    let userId: any
+    const { authorization } = request.request.headers || false
+    if (authorization) userId = await Token.getIdFromRequestToken(request)
+
+    const list = await getListbyIdRepo(client, Number(id))
+    if (!list) throw new Error(`No lists were found by id ${id}`)
+    if (!list.isPublic && list.ownerId !== userId) throw new Error(`Unauthorized to do this action`)
+    return list
   }
 }

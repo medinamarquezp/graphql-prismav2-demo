@@ -12,7 +12,7 @@
     "postprisma:migrate:save": "env-cmd -f ./src/config/%npm_config_env%.env npx prisma migrate up --experimental",
     "dev": "env-cmd -f ./src/config/dev.env nodemon",
     "lint": "eslint \"./src/**/*.{ts,tsx}\" --quiet --fix",
-    "test": "env-cmd -f ./src/config/test.env jest --detectOpenHandles --forceExit",
+    "test": "env-cmd -f ./src/config/test.env jest --detectOpenHandles --forceExit --silent",
     "test:watch": "env-cmd -f ./src/config/test.env jest --watch"
   },
   "keywords": [

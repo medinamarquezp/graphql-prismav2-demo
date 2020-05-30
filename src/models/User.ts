@@ -3,14 +3,12 @@ class User {
   private name: string
   private email: string
   private password: string
-  private token: string
 
-  constructor({ username, name, email, password, token }: UserInterface) {
+  constructor({ username, name, email, password }: UserInterface) {
     this.username = username
     this.name = name
     this.email = email
     this.password = password
-    this.token = token
   }
 
   getData(): any {
@@ -27,7 +25,6 @@ interface UserInterface {
   name: string
   email: string
   password: string
-  token: string
 }
 
 export { User as default }

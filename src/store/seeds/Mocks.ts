@@ -1,16 +1,16 @@
 import User from '@models/User'
 import List from '@models/List'
 import Task from '@models/Task'
+import Password from '@services/Password'
 import client from '@store/PrismaClientSingleton'
 
 class Mocks {
-  static user() {
+  static async user() {
     const mockUser = new User({
       username: 'medinamarquezp',
       name: 'Pedro Medina',
       email: 'medinamarquezp@test.es',
-      password: 'Test12345678',
-      token: 'OkjOYrmKIvq3gik6QUsgGTFf'
+      password: await Password.hash('Test12345678')
     })
     return mockUser.getData()
   }
@@ -18,7 +18,7 @@ class Mocks {
   static async list() {
     const mockList = new List({
       name: 'Test lista',
-      isPublic: true
+      isPublic: false
     })
     const userRelated: number = await client.raw('SELECT id FROM User ORDER BY id DESC LIMIT 1')
     return mockList.getData(userRelated[0].id)

@@ -57,3 +57,17 @@ export const me = gql`
     }
   }
 `
+
+export const getUsersWithNestedLists = gql`
+  query {
+    getUsers {
+      id
+      email
+      lists {
+        id
+        name
+        isPublic
+      }
+    }
+  }
+`

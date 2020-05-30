@@ -13,12 +13,10 @@ export const createListRepo = async (client, id, data) => {
     throw new Error(`Error on creating a new list: ${err}`)
   }
 }
-export const getPublicListsRepo = async client => {
+export const getListsWhereRepo = async (client, where) => {
   try {
     return await client.list.findMany({
-      where: {
-        isPublic: true
-      }
+      where
     })
   } catch (err) {
     throw new Error(`Error on fetching public lists: ${err}`)

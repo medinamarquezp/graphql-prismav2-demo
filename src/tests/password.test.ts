@@ -1,10 +1,9 @@
 import Password from '@services/Password'
 
 describe('Password service test', () => {
-  test('Password hash should match with test value', async () => {
-    const testHash = /^\$2b\$10\$\w.*$/
+  test('Password hash should have 60 characters', async () => {
     const passwordHashed = await Password.hash('Hola12345')
-    expect(passwordHashed).toMatch(testHash)
+    expect(passwordHashed.length).toBe(60)
   })
   test('Comparison of hash and password must be truthy', async () => {
     const plainPassword = 'Hola12345'

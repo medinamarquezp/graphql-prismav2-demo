@@ -2,7 +2,7 @@ import Token from '@services/Token'
 import Password from '@services/Password'
 import { getUserRepo, getUsersRepo, existUserRepo } from '@repositories/UserRepository'
 import {
-  getPublicListsRepo,
+  getListsWhereRepo,
   getListsOfLoggedUserRepo,
   getListbyIdRepo
 } from '@repositories/ListRepository'
@@ -46,7 +46,7 @@ export const Query = {
     const { authorization } = request.request.headers || false
     if (authorization) userId = await Token.getIdFromRequestToken(request)
     if (userId) return await getListsOfLoggedUserRepo(client, userId)
-    return await getPublicListsRepo(client)
+    return await getListsWhereRepo(client, { isPublic: true })
   },
   async getList(_, { id }, { client, request }) {
     let userId: any

@@ -29,9 +29,6 @@ describe('Seed Users locally', () => {
   test("User's email should have an @", async () => {
     expect(users[random(totalUsers)].data.email.indexOf('@')).not.toBe(-1)
   })
-  test("User's token should have 24 characters", async () => {
-    expect(users[random(totalUsers)].data.token.length).toBe(24)
-  })
 })
 
 describe('Seed Lists locally', () => {

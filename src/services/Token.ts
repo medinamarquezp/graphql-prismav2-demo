@@ -34,11 +34,12 @@ class Token {
     return token
   }
 
-  static async getIdFromRequestToken(request) {
+  static async getIdFromRequestToken(request, shouldBeAuthenticated = false) {
+    const { authorization } = request.request.headers || false
+    if (!authorization && !shouldBeAuthenticated) return false
     const token = Token.getTokenFromRequest(request)
     const decodedToken = await Token.verify(token)
-    const { id } = decodedToken
-    return id
+    return decodedToken.id
   }
 }
 

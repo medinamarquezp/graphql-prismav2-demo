@@ -34,6 +34,8 @@ type Query {
   me: User!
   getLists: [List]
   getList(id: ID): List
+  getTasks: [Task]
+  getTask(id: ID): Task
 }
 
 input inputCreateUser {
@@ -62,6 +64,20 @@ input inputUpdateList {
   isPublic: Boolean
 }
 
+input inputCreateTask {
+  title: String!
+  content: String
+  isPublic: Boolean!
+  listId: ID!
+}
+
+input inputUpdateTask {
+  id: ID!
+  title: String
+  content: String
+  isPublic: Boolean
+}
+
 type Mutation {
   createUser(data: inputCreateUser!): User!
   updateUser(data: inputUpdateUser!): User!
@@ -69,4 +85,7 @@ type Mutation {
   createList(data: inputCreateList!): List!
   updateList(data: inputUpdateList!): List!
   deleteList(id: ID!): List!
+  createTask(data: inputCreateTask!): Task!
+  updateTask(data: inputUpdateTask!): Task!
+  deleteTask(id: ID!): Task!
 }

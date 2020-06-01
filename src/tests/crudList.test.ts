@@ -82,7 +82,7 @@ describe('CRUD List', () => {
       const client = ApolloClient.getInstance(token)
       const listToUpdate = updateList(1)
       await expect(client.mutate({ mutation: listToUpdate })).rejects.toThrowError(
-        'There are not any list with this ID'
+        'GraphQL error: This List does not exists'
       )
     })
     test('Logged-in users will be able to update their own lists', async () => {
@@ -123,7 +123,7 @@ describe('CRUD List', () => {
       const client = ApolloClient.getInstance(token)
       const listToDelete = updateList(1)
       await expect(client.mutate({ mutation: listToDelete })).rejects.toThrowError(
-        'There are not any list with this ID'
+        'GraphQL error: This List does not exists'
       )
     })
     test('Logged-in users will be able to delete their own lists', async () => {

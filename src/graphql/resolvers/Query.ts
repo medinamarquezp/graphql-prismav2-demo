@@ -1,11 +1,20 @@
 import Token from '@services/Token'
-import Password from '@services/Password'
-import { getUserRepo, getUsersRepo, existUserRepo } from '@repositories/UserRepository'
+import { validateOwnership } from '@validators/validate'
+import { validateUserExists, validateUserPassword } from '@validators/UserValidator'
+import { validateListExists } from '@validators/ListValidator'
+import { validateTaskExists } from '@validators/TaskValidator'
+import { getUserRepo, getUsersRepo } from '@repositories/UserRepository'
 import {
   getListsWhereRepo,
   getListsOfLoggedUserRepo,
   getListbyIdRepo
 } from '@repositories/ListRepository'
+import {
+  getTaskWhereRepo,
+  getTasksOfLoggedUserRepo,
+  getTaskbyIdRepo,
+  checkTaskOwnerRepo
+} from '@repositories/TaskRepository'
 
 export const Query = {
   ping(): string {
@@ -23,13 +32,12 @@ export const Query = {
 
     return await getUserRepo(client, where)
   },
+
   async login(_, { email, password }, { client }) {
-    const existUser = await existUserRepo(client, { email })
-    if (!existUser) throw new Error('There are not any user with this email')
+    await validateUserExists(client, { email })
 
     const userData = await getUserRepo(client, { email })
-    const isValidPassword = await Password.compare(password, userData.password)
-    if (!isValidPassword) throw new Error('Password is not correct')
+    await validateUserPassword(password, userData.password)
 
     const token = await Token.sign({ id: userData.id })
     return {
@@ -42,20 +50,30 @@ export const Query = {
     return await getUserRepo(client, { id })
   },
   async getLists(_, __, { client, request }) {
-    let userId: any
-    const { authorization } = request.request.headers || false
-    if (authorization) userId = await Token.getIdFromRequestToken(request)
+    const userId = await Token.getIdFromRequestToken(request)
     if (userId) return await getListsOfLoggedUserRepo(client, userId)
     return await getListsWhereRepo(client, { isPublic: true })
   },
   async getList(_, { id }, { client, request }) {
-    let userId: any
-    const { authorization } = request.request.headers || false
-    if (authorization) userId = await Token.getIdFromRequestToken(request)
-
+    const userId = await Token.getIdFromRequestToken(request)
+    await validateListExists(client, id)
     const list = await getListbyIdRepo(client, Number(id))
-    if (!list) throw new Error(`No lists were found by id ${id}`)
-    if (!list.isPublic && list.ownerId !== userId) throw new Error(`Unauthorized to do this action`)
+    if (!list.isPublic) validateOwnership(list.ownerId, userId)
     return list
+  },
+
+  async getTasks(_, __, { client, request }) {
+    const userId = await Token.getIdFromRequestToken(request)
+    if (userId) return await getTasksOfLoggedUserRepo(client, userId)
+    return await getTaskWhereRepo(client, { isPublic: true })
+  },
+  async getTask(_, { id }, { client, request }) {
+    const userId = await Token.getIdFromRequestToken(request)
+    await validateTaskExists(client, id)
+    const task = await getTaskbyIdRepo(client, Number(id))
+    const isTaskOwner = await checkTaskOwnerRepo(client, id, userId)
+    if (!task.isPublic && isTaskOwner.length === 0)
+      throw new Error(`Unauthorized to do this action`)
+    return task
   }
 }

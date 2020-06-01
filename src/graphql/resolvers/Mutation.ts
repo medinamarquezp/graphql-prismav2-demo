@@ -1,28 +1,22 @@
 import Token from '@services/Token'
 import Password from '@services/Password'
-import { validateCreateUserData, validateUpdateUserData } from '@validators/UserValidator'
 
 import {
-  existUserRepo,
-  createUserRepo,
-  deleteUserRepo,
-  updateUserRepo
-} from '@repositories/UserRepository'
+  validateCreateUserData,
+  validateUpdateUserData,
+  validateUserExists,
+  validateUserRegistered
+} from '@validators/UserValidator'
+import validateListActions from '@validators/ListValidator'
+import validateTaskActions from '@validators/TaskValidator'
 
-import {
-  createListRepo,
-  existListRepo,
-  getListbyIdRepo,
-  updateListRepo,
-  deleteListRepo
-} from '@repositories/ListRepository'
+import { createUserRepo, deleteUserRepo, updateUserRepo } from '@repositories/UserRepository'
+import { createListRepo, updateListRepo, deleteListRepo } from '@repositories/ListRepository'
+import { createTaskRepo, updateTaskRepo, deleteTaskRepo } from '@repositories/TaskRepository'
 
 export const Mutation = {
   async createUser(_, { data }, { client }) {
-    const existUsername = await existUserRepo(client, { username: data.username })
-    const existEmail = await existUserRepo(client, { email: data.email })
-    if (existUsername || existEmail) throw new Error('User is already registered')
-
+    await validateUserRegistered(client, data)
     validateCreateUserData(data)
 
     const password = await Password.hash(data.password)
@@ -33,14 +27,12 @@ export const Mutation = {
     return await createUserRepo(client, newUserData)
   },
   async deleteUser(_, { id }, { client }) {
-    const existUser = await existUserRepo(client, { id: Number(id) })
-    if (!existUser) throw new Error('There are not any user with this ID')
+    await validateUserExists(client, { id: Number(id) })
     return await deleteUserRepo(client, Number(id))
   },
 
   async updateUser(_, { data }, { client }) {
-    const existUser = await existUserRepo(client, { id: Number(data.id) })
-    if (!existUser) throw new Error('There are not any user with this ID')
+    await validateUserExists(client, { id: Number(data.id) })
 
     validateUpdateUserData(data)
 
@@ -59,29 +51,30 @@ export const Mutation = {
   },
 
   async createList(_, { data }, { client, request }) {
-    const userId = await Token.getIdFromRequestToken(request)
+    const userId = await Token.getIdFromRequestToken(request, true)
     return await createListRepo(client, userId, data)
   },
 
   async updateList(_, { data }, { client, request }) {
-    const userId = await Token.getIdFromRequestToken(request)
-
-    const existList = await existListRepo(client, Number(data.id))
-    if (!existList) throw new Error('There are not any list with this ID')
-
-    const listToUpdate = await getListbyIdRepo(client, Number(data.id))
-    if (listToUpdate.ownerId !== userId) throw new Error('Unauthorized to do this action')
-
+    await validateListActions(client, request, data.id)
     return await updateListRepo(client, data)
   },
   async deleteList(_, { id }, { client, request }) {
-    const userId = await Token.getIdFromRequestToken(request)
-    const existList = await existListRepo(client, Number(id))
-    if (!existList) throw new Error('There are not any list with this ID')
-
-    const listToDelete = await getListbyIdRepo(client, Number(id))
-    if (listToDelete.ownerId !== userId) throw new Error('Unauthorized to do this action')
-
+    await validateListActions(client, request, id)
     return await deleteListRepo(client, Number(id))
+  },
+  async createTask(_, { data }, { client, request }) {
+    await validateTaskActions(client, request, 0, data.listId)
+    return await createTaskRepo(client, data)
+  },
+
+  async updateTask(_, { data }, { client, request }) {
+    await validateTaskActions(client, request, data.id)
+    return updateTaskRepo(client, data)
+  },
+
+  async deleteTask(_, { id }, { client, request }) {
+    await validateTaskActions(client, request, id)
+    return deleteTaskRepo(client, Number(id))
   }
 }

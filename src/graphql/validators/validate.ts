@@ -6,5 +6,8 @@ const validate = (data, rules) => {
     throw new Error(JSON.stringify(errors))
   }
 }
+const validateOwnership = (ownerId, userId) => {
+  if (ownerId !== userId) throw new Error('Unauthorized to do this action')
+}
 
-export { validate as default }
+export { validate as default, validateOwnership }

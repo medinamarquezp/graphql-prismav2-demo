@@ -8,7 +8,7 @@ const validateTaskExists = async (client, taskId) => {
   if (!existTask) throw new Error('This Task does not exists')
 }
 
-const validatTaskOwnership = async (client, taskId, userId) => {
+const validateTaskOwnership = async (client, taskId, userId) => {
   const isTaskOwner = await checkTaskOwnerRepo(client, taskId, userId)
   if (isTaskOwner.length === 0) throw new Error(`Unauthorized to do this action`)
 }
@@ -24,8 +24,8 @@ const validateTaskActions = async (client, request, taskId = 0, listId = 0) => {
     validateOwnership(relatedList.ownerId, userId)
   } else {
     await validateTaskExists(client, Number(taskId))
-    await validatTaskOwnership(client, taskId, userId)
+    await validateTaskOwnership(client, taskId, userId)
   }
 }
 
-export { validateTaskActions as default, validateTaskExists }
+export { validateTaskActions as default, validateTaskExists, validateTaskOwnership }

@@ -2,7 +2,7 @@ import Token from '@services/Token'
 import { validateOwnership } from '@validators/validate'
 import { validateUserExists, validateUserPassword } from '@validators/UserValidator'
 import { validateListExists } from '@validators/ListValidator'
-import { validateTaskExists } from '@validators/TaskValidator'
+import { validateTaskExists, validateTaskOwnership } from '@validators/TaskValidator'
 import { getUserRepo, getUsersRepo } from '@repositories/UserRepository'
 import {
   getListsWhereRepo,
@@ -12,8 +12,7 @@ import {
 import {
   getTaskWhereRepo,
   getTasksOfLoggedUserRepo,
-  getTaskbyIdRepo,
-  checkTaskOwnerRepo
+  getTaskbyIdRepo
 } from '@repositories/TaskRepository'
 
 export const Query = {
@@ -71,9 +70,7 @@ export const Query = {
     const userId = await Token.getIdFromRequestToken(request)
     await validateTaskExists(client, id)
     const task = await getTaskbyIdRepo(client, Number(id))
-    const isTaskOwner = await checkTaskOwnerRepo(client, id, userId)
-    if (!task.isPublic && isTaskOwner.length === 0)
-      throw new Error(`Unauthorized to do this action`)
+    if (!task.isPublic) await validateTaskOwnership(client, id, userId)
     return task
   }
 }

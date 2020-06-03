@@ -5,7 +5,6 @@
 **_ name: String!
 **_ email: String!
 **_ password: String!
-**_ token: String
 **_ lists: [List!]!
 *** List
 ****_ id: ID!

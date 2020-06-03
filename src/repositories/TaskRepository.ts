@@ -25,6 +25,21 @@ export const getTasksOfLoggedUserRepo = async (client, ownerId) => {
   }
 }
 
+export const getTasksListOfLoggedUserRepo = async (client, listId, ownerId) => {
+  try {
+    const query = taskListQuery(
+      `WHERE t.listId = ${listId} 
+       AND t.isPublic = 1 
+       OR (t.isPublic = 0 
+       AND t.listId = ${listId}
+       AND l.ownerId = ${ownerId})`
+    )
+    return await client.raw(query)
+  } catch (err) {
+    throw new Error(`Error on fetching lists of logged user: ${err}`)
+  }
+}
+
 export const getTaskbyIdRepo = async (client, id) => {
   try {
     return await client.task.findOne({

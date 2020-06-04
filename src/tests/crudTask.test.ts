@@ -4,7 +4,13 @@ import { GQLServer } from '@src/GQLServer'
 import apolloClient from '@src/ApolloClient'
 import loggedUserClient from '@tests/utils/loggedUserClient'
 import { getLists, createList } from '@tests/gqlQueries/ListGQLQueries'
-import { createTask, getTasks, getTaskById } from '@tests/gqlQueries/TaskGQLQueries'
+import {
+  createTask,
+  getTasks,
+  getTaskById,
+  updateTask,
+  deleteTask
+} from '@tests/gqlQueries/TaskGQLQueries'
 
 let client: any
 
@@ -77,6 +83,67 @@ describe('Crud Task', () => {
       const taskById = await client.query({ query: taskToSearch })
       expect(taskById.data.getTask.title).toBe(title)
       expect(taskById.data.getTask.content).toBe(content)
+    })
+  })
+  describe('Update Task', () => {
+    test('It should display an error if user is not logged-in', async () => {
+      const taskToUpdate = updateTask(22)
+      await expect(apolloClient.mutate({ mutation: taskToUpdate })).rejects.toThrowError(
+        'Authorization is required on this transaction'
+      )
+    })
+    test('It should display an error on try to update a task that not exists', async () => {
+      const taskToUpdate = updateTask(2222)
+      await expect(client.mutate({ mutation: taskToUpdate })).rejects.toThrowError(
+        'GraphQL error: This Task does not exists'
+      )
+    })
+    test('Logged-in users will be able to update their own tasks', async () => {
+      const tasks = await client.query({ query: getTasks })
+      const privateTask = tasks.data.getTasks.find(task => task.isPublic === false)
+      const { id } = privateTask
+      const taskToUpdate = updateTask(Number(id))
+      const updatedTask = await client.mutate({ mutation: taskToUpdate })
+      expect(updatedTask.data.updateTask.title).toBe('ACTUALIZACIÓN de tarea test E2E!!!')
+      expect(updatedTask.data.updateTask.isPublic).toBeTruthy()
+    })
+    test('It should display an error if an user try to update a task of other user', async () => {
+      const tasks = await apolloClient.query({ query: getTasks })
+      const firstTaskId = Number(tasks.data.getTasks[0].id)
+      const taskToUpdate = updateTask(firstTaskId)
+      await expect(client.mutate({ mutation: taskToUpdate })).rejects.toThrowError(
+        'GraphQL error: Unauthorized to do this action'
+      )
+    })
+  })
+  describe('Delete a Task', () => {
+    test('It should display an error if user is not logged-in', async () => {
+      const taskToDelete = deleteTask(22)
+      await expect(apolloClient.mutate({ mutation: taskToDelete })).rejects.toThrowError(
+        'Authorization is required on this transaction'
+      )
+    })
+    test('It should display an error on try to delete a task that not exists', async () => {
+      const taskToDelete = deleteTask(2222)
+      await expect(client.mutate({ mutation: taskToDelete })).rejects.toThrowError(
+        'GraphQL error: This Task does not exists'
+      )
+    })
+    test('Logged-in users will be able to delete their own tasks', async () => {
+      const tasks = await client.query({ query: getTasks })
+      const privateTask = tasks.data.getTasks.find(task => task.isPublic === false)
+      const { id } = privateTask
+      const taskToDelete = deleteTask(Number(id))
+      const deletedTask = await client.mutate({ mutation: taskToDelete })
+      expect(deletedTask.data.deleteTask.title).toBe('ACTUALIZACIÓN de tarea test E2E!!!')
+    })
+    test('It should display an error if an user try to delete a task of other user', async () => {
+      const tasks = await apolloClient.query({ query: getTasks })
+      const firstTaskId = Number(tasks.data.getTasks[0].id)
+      const taskToDelete = deleteTask(firstTaskId)
+      await expect(client.mutate({ mutation: taskToDelete })).rejects.toThrowError(
+        'GraphQL error: Unauthorized to do this action'
+      )
     })
   })
 })

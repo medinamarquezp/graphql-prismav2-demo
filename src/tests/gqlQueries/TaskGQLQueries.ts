@@ -37,3 +37,26 @@ export const getTaskById = id => gql`
     }
   }
 `
+export const updateTask = id => gql`
+  mutation{
+    updateTask(
+      data: {
+        id: ${id}
+        title: "ACTUALIZACIÓN de tarea test E2E!!!"
+        isPublic: true
+      }
+    ){
+      title
+      isPublic
+    }
+  }
+`
+export const deleteTask = id => gql`
+  mutation{
+    deleteTask(id: ${id}){
+      id
+      title
+      content
+    }
+  }
+`

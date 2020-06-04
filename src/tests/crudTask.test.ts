@@ -4,7 +4,7 @@ import { GQLServer } from '@src/GQLServer'
 import apolloClient from '@src/ApolloClient'
 import loggedUserClient from '@tests/utils/loggedUserClient'
 import { getLists, createList } from '@tests/gqlQueries/ListGQLQueries'
-import { createTask } from '@tests/gqlQueries/TaskGQLQueries'
+import { createTask, getTasks, getTaskById } from '@tests/gqlQueries/TaskGQLQueries'
 
 let client: any
 
@@ -52,6 +52,31 @@ describe('Crud Task', () => {
       expect(title).toBe('Creación de tarea test E2E NEW!!!')
       expect(content).toBe('Este el contenido de la nueva tarea creada desde un test E2E')
       expect(isPublic).toBeFalsy()
+    })
+  })
+  describe('Read tasks', () => {
+    test('Unregistered users should only see public tasks', async () => {
+      const tasks = await apolloClient.query({ query: getTasks })
+      const privateTasks = tasks.data.getTasks.some(task => task.isPublic === false)
+      expect(privateTasks).toBeFalsy()
+    })
+    test('Logged-in users should see public tasks and their own private tasks', async () => {
+      const tasks = await client.query({ query: getTasks })
+      const tasksData = tasks.data.getTasks
+      const publicTasks = tasksData.some(task => task.isPublic === true)
+      const privateTasks = tasksData.filter(task => task.isPublic === false)
+      expect(publicTasks).toBeTruthy()
+      expect(privateTasks.length).toBe(1)
+      expect(privateTasks[0].title).toBe('Creación de tarea test E2E NEW!!!')
+    })
+    test('Logged-in users should be able to search their own private tasks by id', async () => {
+      const tasks = await client.query({ query: getTasks })
+      const privateTask = tasks.data.getTasks.find(task => task.isPublic === false)
+      const { id, title, content } = privateTask
+      const taskToSearch = getTaskById(id)
+      const taskById = await client.query({ query: taskToSearch })
+      expect(taskById.data.getTask.title).toBe(title)
+      expect(taskById.data.getTask.content).toBe(content)
     })
   })
 })

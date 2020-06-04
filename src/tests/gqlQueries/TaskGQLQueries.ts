@@ -17,3 +17,23 @@ export const createTask = listId => gql`
     }
   }
 `
+export const getTasks = gql`
+  query {
+    getTasks {
+      id
+      title
+      content
+      isPublic
+    }
+  }
+`
+export const getTaskById = id => gql`
+  query {
+    getTask(id: ${id}) {
+      id
+      title
+      content
+      isPublic
+    }
+  }
+`

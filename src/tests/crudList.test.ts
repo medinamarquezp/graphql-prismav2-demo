@@ -1,8 +1,8 @@
 import Seeder from '@seeds/Seeder'
 import cleanDB from '@tests/utils/cleanDB'
 import { GQLServer } from '@src/GQLServer'
-import apolloClient, { ApolloClient } from '@src/ApolloClient'
-import { login, createUser } from '@tests/gqlQueries/UserGQLQueries'
+import apolloClient from '@src/ApolloClient'
+import loggedUserClient from '@tests/utils/loggedUserClient'
 import {
   createList,
   getLists,
@@ -11,12 +11,14 @@ import {
   deleteList
 } from '@tests/gqlQueries/ListGQLQueries'
 
+let client: any
+
 beforeAll(async () => {
   await cleanDB()
   await Seeder.seedUsers(5, true, true)
   await Seeder.seedLists(5, true, true)
   await GQLServer.start()
-  await apolloClient.mutate({ mutation: createUser })
+  client = await loggedUserClient()
 })
 
 afterAll(() => {
@@ -31,9 +33,6 @@ describe('CRUD List', () => {
       )
     })
     test('Logged-in users will be able to create a new list', async () => {
-      const userLogged = await apolloClient.query({ query: login })
-      const { token } = userLogged.data.login
-      const client = ApolloClient.getInstance(token)
       const rs = await client.mutate({ mutation: createList })
       expect(rs.data.createList.name).toBe('Nueva Lista E2E Test')
       expect(rs.data.createList.isPublic).toBeFalsy()
@@ -42,18 +41,15 @@ describe('CRUD List', () => {
 
   describe('Read lists', () => {
     test('Unregistered users should only see public lists', async () => {
-      const rs = await apolloClient.query({ query: getLists })
-      const privateLists = rs.data.getLists.some(list => list.isPublic === false)
+      const lists = await apolloClient.query({ query: getLists })
+      const privateLists = lists.data.getLists.some(list => list.isPublic === false)
       expect(privateLists).toBeFalsy()
     })
     test('Logged-in users should see public lists and their own private lists', async () => {
-      const userLogged = await apolloClient.query({ query: login })
-      const { token } = userLogged.data.login
-      const client = ApolloClient.getInstance(token)
-      const rs = await client.query({ query: getLists })
-      const lists = rs.data.getLists
-      const publicList = lists.some(list => list.isPublic === true)
-      const privateLists = lists.filter(list => list.isPublic === false)
+      const lists = await client.query({ query: getLists })
+      const listsData = lists.data.getLists
+      const publicList = listsData.some(list => list.isPublic === true)
+      const privateLists = listsData.filter(list => list.isPublic === false)
       expect(publicList).toBeTruthy()
       expect(privateLists.length).toBe(1)
       expect(privateLists[0].name).toBe('Nueva Lista E2E Test')
@@ -77,18 +73,12 @@ describe('CRUD List', () => {
       )
     })
     test('It should display an error on try to update a list that not exists', async () => {
-      const userLogged = await apolloClient.query({ query: login })
-      const { token } = userLogged.data.login
-      const client = ApolloClient.getInstance(token)
       const listToUpdate = updateList(1)
       await expect(client.mutate({ mutation: listToUpdate })).rejects.toThrowError(
         'GraphQL error: This List does not exists'
       )
     })
     test('Logged-in users will be able to update their own lists', async () => {
-      const userLogged = await apolloClient.query({ query: login })
-      const { token } = userLogged.data.login
-      const client = ApolloClient.getInstance(token)
       const lists = await client.query({ query: getLists })
       const loggedUserList = lists.data.getLists.find(list => list.isPublic === false)
       const { id } = loggedUserList
@@ -97,9 +87,6 @@ describe('CRUD List', () => {
       expect(updatedList.data.updateList.name).toBe('Nueva Lista E2E Test ACTUALIZADA!')
     })
     test('It should display an error if an user try to update a list of other user', async () => {
-      const userLogged = await apolloClient.query({ query: login })
-      const { token } = userLogged.data.login
-      const client = ApolloClient.getInstance(token)
       const lists = await client.query({ query: getLists })
       const otherUserList = lists.data.getLists.find(list => list.isPublic === true)
       const { id } = otherUserList
@@ -118,18 +105,12 @@ describe('CRUD List', () => {
       )
     })
     test('It should display an error on try to delete a list that not exists', async () => {
-      const userLogged = await apolloClient.query({ query: login })
-      const { token } = userLogged.data.login
-      const client = ApolloClient.getInstance(token)
       const listToDelete = updateList(1)
       await expect(client.mutate({ mutation: listToDelete })).rejects.toThrowError(
         'GraphQL error: This List does not exists'
       )
     })
     test('Logged-in users will be able to delete their own lists', async () => {
-      const userLogged = await apolloClient.query({ query: login })
-      const { token } = userLogged.data.login
-      const client = ApolloClient.getInstance(token)
       const lists = await client.query({ query: getLists })
       const loggedUserList = lists.data.getLists.find(list => list.isPublic === false)
       const { id } = loggedUserList
@@ -138,9 +119,6 @@ describe('CRUD List', () => {
       expect(deletedList.data.deleteList.name).toBe('Nueva Lista E2E Test ACTUALIZADA!')
     })
     test('It should display an error if an user try to delete a list of other user', async () => {
-      const userLogged = await apolloClient.query({ query: login })
-      const { token } = userLogged.data.login
-      const client = ApolloClient.getInstance(token)
       const lists = await client.query({ query: getLists })
       const otherUserList = lists.data.getLists.find(list => list.isPublic === true)
       const { id } = otherUserList

@@ -61,19 +61,19 @@ describe('CRUD User', () => {
     expect(loggedUserData.data.me.email).toBe('pedro.medina@e2etest.es')
   })
   test('Unregistered users should only see public lists', async () => {
-    const userNestedLists = await apolloClient.query({ query: getUsersWithNestedLists })
-    const userLists = userNestedLists.data.getUsers.map(user => user.lists)
+    const usersWithNestedLists = await apolloClient.query({ query: getUsersWithNestedLists })
+    const lists = usersWithNestedLists.data.getUsers.map(user => user.lists)
     const isPublic = list => list.isPublic === true
-    const checkIfAllListsArePublic = userLists.flat().every(isPublic)
+    const checkIfAllListsArePublic = lists.flat().every(isPublic)
     expect(checkIfAllListsArePublic).toBeTruthy()
   })
-  test('Logged-in should see public lists and their own private lists', async () => {
+  test('Logged-in users should see public and their own private lists', async () => {
     const loggedUser = await apolloClient.query({ query: login })
     const { token } = loggedUser.data.login
     const client = ApolloClient.getInstance(token)
     await client.mutate({ mutation: createList })
-    const rs = await client.query({ query: getUsersWithNestedLists })
-    const userLists = rs.data.getUsers.map(user => user.lists)
+    const usersWithNestedLists = await client.query({ query: getUsersWithNestedLists })
+    const userLists = usersWithNestedLists.data.getUsers.map(user => user.lists)
     const privateLists = userLists.flat().filter(list => list.isPublic === false)
     expect(privateLists.length).toBe(1)
     expect(privateLists[0].name).toBe('Nueva Lista E2E Test')

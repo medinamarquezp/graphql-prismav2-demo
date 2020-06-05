@@ -54,3 +54,18 @@ export const deleteList = id => gql`
       }
     }
   `
+
+export const getListsWithNestedTasks = gql`
+  query {
+    getLists {
+      id
+      name
+      isPublic
+      tasks {
+        id
+        title
+        isPublic
+      }
+    }
+  }
+`

@@ -8,8 +8,10 @@ import {
   getLists,
   getListById,
   updateList,
-  deleteList
+  deleteList,
+  getListsWithNestedTasks
 } from '@tests/gqlQueries/ListGQLQueries'
+import { createTask } from '@tests/gqlQueries/TaskGQLQueries'
 
 let client: any
 
@@ -33,9 +35,9 @@ describe('CRUD List', () => {
       )
     })
     test('Logged-in users will be able to create a new list', async () => {
-      const rs = await client.mutate({ mutation: createList })
-      expect(rs.data.createList.name).toBe('Nueva Lista E2E Test')
-      expect(rs.data.createList.isPublic).toBeFalsy()
+      const list = await client.mutate({ mutation: createList })
+      expect(list.data.createList.name).toBe('Nueva Lista E2E Test')
+      expect(list.data.createList.isPublic).toBeFalsy()
     })
   })
 
@@ -126,6 +128,27 @@ describe('CRUD List', () => {
       await expect(client.mutate({ mutation: listToDelete })).rejects.toThrowError(
         'Unauthorized to do this action'
       )
+    })
+  })
+
+  describe('Nested tasks', () => {
+    test('Unregistered users should only see nested public tasks', async () => {
+      const listsWithNestedTasks = await apolloClient.query({ query: getListsWithNestedTasks })
+      const tasks = listsWithNestedTasks.data.getLists.map(list => list.tasks)
+      const isPublic = task => task.isPublic === true
+      const checkIfAllTasksArePublic = tasks.flat().every(isPublic)
+      expect(checkIfAllTasksArePublic).toBeTruthy()
+    })
+    test('Logged-in users should see public and their own private tasks', async () => {
+      const list = await client.mutate({ mutation: createList })
+      const taskToCreate = createTask(Number(list.data.createList.id))
+      await client.mutate({ mutation: taskToCreate })
+      const listsWithNestedTasks = await client.query({ query: getListsWithNestedTasks })
+      const tasks = listsWithNestedTasks.data.getLists.map(list => list.tasks)
+      const privateTasks = tasks.flat().filter(task => task.isPublic === false)
+      expect(privateTasks.length).toBe(1)
+      expect(privateTasks[0].title).toBe('Creación de tarea test E2E NEW!!!')
+      expect(privateTasks[0].isPublic).toBeFalsy()
     })
   })
 })

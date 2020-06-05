@@ -3,13 +3,14 @@ import cleanDB from '@tests/utils/cleanDB'
 import { GQLServer } from '@src/GQLServer'
 import apolloClient from '@src/ApolloClient'
 import loggedUserClient from '@tests/utils/loggedUserClient'
-import { getLists, createList } from '@tests/gqlQueries/ListGQLQueries'
+import { getLists, getListById, createList } from '@tests/gqlQueries/ListGQLQueries'
 import {
   createTask,
   getTasks,
   getTaskById,
   updateTask,
-  deleteTask
+  deleteTask,
+  getTaskByIdWithNestedList
 } from '@tests/gqlQueries/TaskGQLQueries'
 
 let client: any
@@ -144,6 +145,18 @@ describe('Crud Task', () => {
       await expect(client.mutate({ mutation: taskToDelete })).rejects.toThrowError(
         'GraphQL error: Unauthorized to do this action'
       )
+    })
+  })
+  describe('Nested list', () => {
+    test('It should display a nested list name of a task', async () => {
+      const tasks = await client.query({ query: getTasks })
+      const firstTaskId = Number(tasks.data.getTasks[0].id)
+      const queryTask = getTaskByIdWithNestedList(firstTaskId)
+      const taskWithNestedList = await client.query({ query: queryTask })
+      const { id, name } = taskWithNestedList.data.getTask.list
+      const queryList = getListById(Number(id))
+      const list = await client.query({ query: queryList })
+      expect(name).toBe(list.data.getList.name)
     })
   })
 })

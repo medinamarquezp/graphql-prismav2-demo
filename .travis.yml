@@ -8,6 +8,7 @@ cache:
 before_install:
   - cd src/store/ && mkdir db && cd db/ && touch ci.db
   - cd .. && cd .. && cd ..
+  - npm install -g env-cmd
 install:
   - npm install
   - npm run prisma:generate --env=test

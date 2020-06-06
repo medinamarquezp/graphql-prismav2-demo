@@ -6,6 +6,7 @@ cache:
   directories:
     - node_modules
 before_install:
+  - ls -l
   - npm run generate:db --dbname=ci
 install:
   - npm install

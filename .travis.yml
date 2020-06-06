@@ -9,7 +9,7 @@ before_install:
   - npm install -g env-cmd
 install:
   - npm install
-  - npm run prisma:generate --env=ci
+  - npm run prisma:generate:lnx --env=ci
   - cd src/store/
-  - npm run prisma:migrate:save --env=ci --name=ci_init
+  - npm run prisma:migrate:lnx:save --env=ci --name=ci_init
   - cd .. && cd ..

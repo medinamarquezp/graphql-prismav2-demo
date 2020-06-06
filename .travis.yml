@@ -7,6 +7,8 @@ cache:
     - node_modules
 before_install:
   - ls -l
+  - cd src/
+  - ls -l
   - cd src/store/db && touch ci.db
 install:
   - npm install

@@ -1,6 +1,8 @@
 build
 coverage
 node_modules
-src/config/[a-z]*.env
 src/store/migrations
-src/store/db/[a-z]*.db
+**/test.env
+**/dev.env
+**/test.db
+**/dev.db

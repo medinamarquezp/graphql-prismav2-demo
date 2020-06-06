@@ -19,7 +19,7 @@ export const getTasksOfLoggedUserRepo = async (client, ownerId) => {
     const query = taskListQuery(
       `WHERE t.isPublic = 1 OR (t.isPublic = 0 and l.ownerId = ${ownerId})`
     )
-    return await client.raw(query)
+    return await client.queryRaw(query)
   } catch (err) {
     throw new Error(`Error on fetching lists of logged user: ${err}`)
   }
@@ -34,7 +34,7 @@ export const getTasksListOfLoggedUserRepo = async (client, listId, ownerId) => {
        AND t.listId = ${listId}
        AND l.ownerId = ${ownerId})`
     )
-    return await client.raw(query)
+    return await client.queryRaw(query)
   } catch (err) {
     throw new Error(`Error on fetching lists of logged user: ${err}`)
   }
@@ -67,7 +67,7 @@ export const existTaskRepo = async (client, id) => {
 export const checkTaskOwnerRepo = async (client, id, ownerId) => {
   try {
     const query = taskListQuery(`WHERE t.id = ${id} and l.ownerId = ${ownerId}`)
-    return await client.raw(query)
+    return await client.queryRaw(query)
   } catch (err) {
     throw new Error(`Error on checking task owner: ${err}`)
   }

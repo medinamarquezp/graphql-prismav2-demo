@@ -7,8 +7,7 @@ export class UserFactory implements Ifactory {
       username: internet.userName(),
       name: `${name.firstName()} ${name.lastName()}`,
       email: internet.email(),
-      password: random.alphaNumeric(8),
-      token: random.alphaNumeric(24)
+      password: random.alphaNumeric(8)
     })
     return user.getData()
   }

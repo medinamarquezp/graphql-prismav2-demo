@@ -125,7 +125,7 @@ describe('Seed Tasks on DB', () => {
     expect(existTestTask).toBe(1)
   })
   test('Last task on DB sould be public', async () => {
-    const lastTask = await client.raw('SELECT isPublic FROM Task ORDER BY id DESC LIMIT 1')
+    const lastTask = await client.queryRaw('SELECT isPublic FROM Task ORDER BY id DESC LIMIT 1')
     expect(lastTask).toBeTruthy()
   })
 })

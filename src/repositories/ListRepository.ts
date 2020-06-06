@@ -24,7 +24,7 @@ export const getListsWhereRepo = async (client, where) => {
 }
 export const getListsOfLoggedUserRepo = async (client, ownerId) => {
   try {
-    return await client.raw(
+    return await client.queryRaw(
       `SELECT * FROM List WHERE isPublic = 1 or (isPublic = 0 AND ownerId = ${ownerId})`
     )
   } catch (err) {

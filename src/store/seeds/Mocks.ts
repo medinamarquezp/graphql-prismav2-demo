@@ -20,7 +20,9 @@ class Mocks {
       name: 'Test lista',
       isPublic: false
     })
-    const userRelated: number = await client.raw('SELECT id FROM User ORDER BY id DESC LIMIT 1')
+    const userRelated: number = await client.queryRaw(
+      'SELECT id FROM User ORDER BY id DESC LIMIT 1'
+    )
     return mockList.getData(userRelated[0].id)
   }
 
@@ -30,7 +32,9 @@ class Mocks {
       content: 'Aliqua qui est exercitation ut velit labore sit laboris.',
       isPublic: true
     })
-    const listRelated: number = await client.raw('SELECT id FROM List ORDER BY id DESC LIMIT 1')
+    const listRelated: number = await client.queryRaw(
+      'SELECT id FROM List ORDER BY id DESC LIMIT 1'
+    )
     return mockTask.getData(listRelated[0].id)
   }
 }

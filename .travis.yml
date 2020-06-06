@@ -6,10 +6,8 @@ cache:
   directories:
     - node_modules
 before_install:
-  - ls -l
-  - cd src/ && cd store/
-  - ls -l
-  - cd src/store/db && touch ci.db
+  - cd src/store/ && mkdir db && cd db/ && touch ci.db
+  - cd .. && cd .. && cd ..
 install:
   - npm install
   - npm run prisma:generate --env=test

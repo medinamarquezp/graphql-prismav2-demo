@@ -86,6 +86,19 @@ describe('Crud Task', () => {
       expect(taskById.data.getTask.content).toBe(content)
     })
   })
+  describe('Nested list', () => {
+    test('It should display a nested list name of a task', async () => {
+      const tasks = await client.query({ query: getTasks })
+      const lastTask = tasks.data.getTasks.length - 1
+      const lastTaskId = Number(tasks.data.getTasks[lastTask].id)
+      const queryTask = getTaskByIdWithNestedList(lastTaskId)
+      const taskWithNestedList = await client.query({ query: queryTask })
+      const { id, name } = taskWithNestedList.data.getTask.list
+      const queryList = getListById(Number(id))
+      const list = await client.query({ query: queryList })
+      expect(name).toBe(list.data.getList.name)
+    })
+  })
   describe('Update Task', () => {
     test('It should display an error if user is not logged-in', async () => {
       const taskToUpdate = updateTask(22)
@@ -145,18 +158,6 @@ describe('Crud Task', () => {
       await expect(client.mutate({ mutation: taskToDelete })).rejects.toThrowError(
         'GraphQL error: Unauthorized to do this action'
       )
-    })
-  })
-  describe('Nested list', () => {
-    test('It should display a nested list name of a task', async () => {
-      const tasks = await client.query({ query: getTasks })
-      const firstTaskId = Number(tasks.data.getTasks[0].id)
-      const queryTask = getTaskByIdWithNestedList(firstTaskId)
-      const taskWithNestedList = await client.query({ query: queryTask })
-      const { id, name } = taskWithNestedList.data.getTask.list
-      const queryList = getListById(Number(id))
-      const list = await client.query({ query: queryList })
-      expect(name).toBe(list.data.getList.name)
     })
   })
 })

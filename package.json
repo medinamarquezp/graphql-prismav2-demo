@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rm -r ./build",
     "build": "npm run lint && tsc",
-    "generate:db": "cd ./src/store/db && touch %npm_config_dbname%.db",
+    "generate:db": "cd src/store/db && touch %npm_config_dbname%.db",
     "prisma:generate": "env-cmd -f ./src/config/%npm_config_env%.env npx prisma generate --schema ./src/store/schema.prisma",
     "prisma:migrate:save": "env-cmd -f ./src/config/%npm_config_env%.env npx prisma migrate save --name %npm_config_name% --experimental",
     "postprisma:migrate:save": "env-cmd -f ./src/config/%npm_config_env%.env npx prisma migrate up --experimental",

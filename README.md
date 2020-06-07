@@ -1,3 +1,5 @@
+https://travis-ci.com/medinamarquezp/graphql-prismav2-demo.svg?branch=master
+
 # graphql-prismav2-demo
 
 ### EL proyecto

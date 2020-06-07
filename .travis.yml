@@ -1,15 +1,15 @@
 os: linux
 language: node_js
 node_js:
-  - stable
-cache:
-  directories:
-    - node_modules
+  - 12
 before_install:
-  - npm install -g env-cmd
+  - yarn install -g env-cmd
 install:
   - npm install
   - npm run prisma:generate:lnx --env=ci
   - cd src/store/
   - npm run prisma:migrate:lnx:save --env=ci --name=ci_init
   - cd .. && cd ..
+cache:
+  directories:
+    - node_modules

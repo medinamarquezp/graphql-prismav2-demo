@@ -2,14 +2,18 @@ os: linux
 language: node_js
 node_js:
   - '12'
-before_install:
-  - npm install -g env-cmd
+env:
+  - URI="http://127.0.0.1"
+  - PORT=8000
+  - TOKEN_SECRET="TEST_CI7c@RmMp82hjn+nrAh-YFV5V"
+  - PRISMA_DB_URL="file:./db/ci.db"
 install:
   - npm install
-  - npm run prisma:generate:lnx --env=ci
+  - npm run prisma:generate:ci
   - cd src/store/
-  - npm run prisma:migrate:lnx:save --env=ci --name=ci_init
+  - npm run prisma:migrate:ci:save
   - cd .. && cd ..
+  - npm run test
 cache:
   directories:
     - node_modules

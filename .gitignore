@@ -2,7 +2,6 @@ build
 coverage
 node_modules
 src/store/migrations
-**/test.env
-**/dev.env
+**/*.env
 **/test.db
 **/dev.db

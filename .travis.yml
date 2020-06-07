@@ -1,9 +1,9 @@
 os: linux
 language: node_js
 node_js:
-  - 12
+  - '12'
 before_install:
-  - yarn install -g env-cmd
+  - npm install -g env-cmd
 install:
   - npm install
   - npm run prisma:generate:lnx --env=ci
